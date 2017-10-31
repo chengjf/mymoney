@@ -57,3 +57,14 @@ func (a *InOut) Income(from Pool, c Category, i int64) {
 func (a *InOut) GetTransaction() []Transaction {
 	return a.transactions
 }
+
+func (a *InOut) QueryTransactionsByCategory(c Category) []Transaction {
+	rs := []Transaction{}
+	for _, e := range a.transactions {
+		temp := e
+		if e.Category == c {
+			rs = append(rs, temp)
+		}
+	}
+	return rs
+}

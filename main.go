@@ -34,15 +34,23 @@ func test() {
 	}
 	print(s)
 
+	fmt.Println("--------Expense---------")
 	a.Expense(&b, c,10);
+	a.Expense(&b, c,20);
+	a.Expense(&b, c,30);
 	print(a)
 	print(b)
 	print(a.GetTransaction())
 
+	fmt.Println("--------Income---------")
 	a.Income(&b, s, 1000)
 	print(a)
 	print(b)
 	print(a.GetTransaction())
+
+	fmt.Println("--------Query---------")
+	rs := a.QueryTransactionsByCategory(c)
+	print(rs)
 
 }
 
