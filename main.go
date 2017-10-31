@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/chengjf/mymoney/model"
-	"time"
 	"encoding/json"
 )
 
@@ -14,12 +13,14 @@ func main() {
 
 func test() {
 	var a = model.Account{
-		Name:    "Cash",
-		Balance: 100,
+		model.InOut{
+			Name:    "Cash",
+			Balance: 100,
+		},
 	}
 	print(a)
 	var b = model.Account{
-		Name: "美丽源",
+		model.InOut{Name: "美丽源",},
 	}
 	print(b)
 
@@ -28,20 +29,14 @@ func test() {
 	}
 	print(c)
 
-	var t = model.Transaction{
-		From:       a,
-		To:         b,
-		Amount:     22,
-		CreateDate: time.Now(),
-		UpdateDate: time.Now(),
-	}
-
-	print(t)
+	a.Expense(&b, 10);
+	print(a)
+	print(b)
 
 }
 
 func print(v interface{}) {
-	if bytes, e := json.MarshalIndent(v,"","\t"); e == nil {
+	if bytes, e := json.MarshalIndent(v, "", "\t"); e == nil {
 		fmt.Printf("%#s\n", string(bytes))
 	}
 }
