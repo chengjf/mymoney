@@ -29,9 +29,20 @@ func test() {
 	}
 	print(c)
 
-	a.Expense(&b, 10);
+	var s = model.Category{
+		Name: "工资",
+	}
+	print(s)
+
+	a.Expense(&b, c,10);
 	print(a)
 	print(b)
+	print(a.GetTransaction())
+
+	a.Income(&b, s, 1000)
+	print(a)
+	print(b)
+	print(a.GetTransaction())
 
 }
 
