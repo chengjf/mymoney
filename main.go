@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/chengjf/mymoney/model"
 	"time"
+	"encoding/json"
 )
 
 func main() {
@@ -16,16 +17,16 @@ func test() {
 		Name:    "Cash",
 		Balance: 100,
 	}
-	fmt.Println(a)
+	print(a)
 	var b = model.Account{
 		Name: "美丽源",
 	}
-	fmt.Println(b)
+	print(b)
 
 	var c = model.Category{
 		Name: "晚饭",
 	}
-	fmt.Println(c)
+	print(c)
 
 	var t = model.Transaction{
 		From:       a,
@@ -35,6 +36,12 @@ func test() {
 		UpdateDate: time.Now(),
 	}
 
-	fmt.Println(t)
+	print(t)
 
+}
+
+func print(v interface{}) {
+	if bytes, e := json.MarshalIndent(v,"","\t"); e == nil {
+		fmt.Printf("%#s\n", string(bytes))
+	}
 }
