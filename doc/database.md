@@ -1,5 +1,41 @@
 # database
 
+## 账户
+
+资产类和负债类会计科目有账户。收入类和支出类没有实体账户，虚拟。
+
+表名：t_account
+
+<table>
+<tr>
+    <th>字段</th>
+    <th>类型</th>
+    <th>描述</th>
+</tr>
+
+<tr>
+<td>id</td>
+<td>int</td>
+<td>自增主键</td>
+</tr>
+<tr>
+<td>name</td>
+<td>varchar(255)</td>
+<td>账户名称</td>
+</tr>
+<tr>
+<td>entry_id</td>
+<td>int</td>
+<td>会计科目，顶级科目</td>
+</tr>
+<tr>
+<td>balance</td>
+<td>int</td>
+<td>当前余额</td>
+</tr>
+
+</table>
+
 ## 借贷流水
 
 表名：t_record

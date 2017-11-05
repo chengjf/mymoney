@@ -1,0 +1,2 @@
+insert into t_account (name, entry_id, balance) (select '现金账户1',id,0 from t_entry where name = '现金' and level = 2);
+insert into t_account (name, entry_id, balance) (select '现金账户2',id,0 from t_entry where name = '现金' and level = 2);
