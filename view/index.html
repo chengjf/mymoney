@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/axios/0.16.2/axios.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <title>Document</title>
+</head>
+<body>
+<div id="app">
+
+    <form @submit.prevent="submit">
+        <h2>借</h2>
+        <select v-model="debitAccount">
+            <option disabled value="">请选择</option>
+            <option v-for="account in accounts" :value="account.Id">
+                {{ account.Name }}
+            </option>
+        </select>
+        <select v-model="debitEntry">
+            <option disabled value="">请选择</option>
+            <option v-for="entry in entries" :value="entry.Id">
+                {{ entry.Name }}
+            </option>
+        </select>
+
+        <h2>贷</h2>
+
+        <select v-model="creditAccount">
+            <option disabled value="">请选择</option>
+            <option v-for="account in accounts" :value="account.Id">
+                {{ account.Name }}
+            </option>
+        </select>
+        <select v-model="creditEntry">
+            <option disabled value="">请选择</option>
+            <option v-for="entry in entries" :value="entry.Id">
+                {{ entry.Name }}
+            </option>
+        </select>
+        <h2>金额</h2>
+        <input type="number" v-model="amount"/>
+        <input type="date" v-model="date"/>
+        <input type="time" v-model="time"/>
+        <time datetime="YYYY-MM-DDThh:mm:ssTZD">
+
+        <input type="text" v-model="counter"/>
+
+        <input type="submit" value="提交"/>
+    </form>
+</div>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

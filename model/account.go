@@ -3,10 +3,10 @@ package model
 import "github.com/jmoiron/sqlx"
 
 type Account struct {
-	Id      uint64  `db:"id"`
-	Name    string  `db:"name"`
-	EntryId uint64  `db:"entry_id"`
-	Balance float64 `db:"balance"`
+	Id      uint64  `db:"id",json:"id"`
+	Name    string  `db:"name",json:"name"`
+	EntryId uint64  `db:"entry_id",json:"entry_id"`
+	Balance float64 `db:"balance",json:"balance"`
 }
 
 type AccountDao struct {

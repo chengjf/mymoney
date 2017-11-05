@@ -14,7 +14,38 @@ import (
 
 func main() {
 	fmt.Println("Hello, this is my first go application.")
-	test()
+	//test()
+	var x = "2006-01-02T15:04:05Z07:00"
+	now := time.Now()
+	timeNow := now.Format("2006-01-02 15:04:05")
+
+	parse, e := time.Parse("2006-01-02 15:04:05", timeNow)
+	fmt.Println(x, now)
+	if e != nil {
+
+	}
+	fmt.Println(parse)
+	var (
+		year int
+		mon  int
+		mday int
+		hour int
+		min  int
+		sec  int
+	)
+	str := "2017-11-05 18:20"
+	if n, err := fmt.Sscanf(str, "%d-%02d-%02d %02d:%02d:%02d", &year, &mon, &mday, &hour, &min, &sec); err != nil {
+		fmt.Println(err)
+		fmt.Println(n)
+
+		fmt.Println(year)
+		fmt.Println(mon)
+		fmt.Println(mday)
+		fmt.Println(hour)
+		fmt.Println(min)
+		fmt.Println(sec)
+	}
+
 }
 
 func test() {
