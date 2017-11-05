@@ -5,7 +5,7 @@ CREATE TABLE t_account (
   COMMENT '账户名称',
   `entry_id`    INT UNSIGNED                NOT NULL
   COMMENT '会计科目，二级科目',
-  `balance`     INT                         NOT NULL DEFAULT 0
+  `balance`     DOUBLE                      NOT NULL DEFAULT 0.00
   COMMENT '金额',
   `create_time` DATETIME                    NOT NULL DEFAULT CURRENT_TIMESTAMP
   COMMENT '记录创建时间',

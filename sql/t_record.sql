@@ -7,7 +7,7 @@ CREATE TABLE t_record (
   COMMENT '借贷账户',
   `entry_id`    INT UNSIGNED                NOT NULL
   COMMENT '会计科目',
-  `amount`      INT                         NOT NULL DEFAULT 0
+  `amount`      DOUBLE                      NOT NULL DEFAULT 0.00
   COMMENT '金额',
   `datetime`    DATETIME                    NOT NULL DEFAULT CURRENT_TIMESTAMP
   COMMENT '日期',
