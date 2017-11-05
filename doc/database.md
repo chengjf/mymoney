@@ -1,6 +1,55 @@
 # database
 
-#### 会计科目
+## 借贷流水
+
+表名：t_record
+
+<table>
+<tr>
+    <th>字段</th>
+    <th>类型</th>
+    <th>描述</th>
+</tr>
+
+<tr>
+<td>id</td>
+<td>int</td>
+<td>自增主键</td>
+</tr>
+<tr>
+<td>type</td>
+<td>int</td>
+<td>借贷类型，1-借，2-贷</td>
+</tr>
+<tr>
+<td>account_id</td>
+<td>int</td>
+<td>借贷账户</td>
+</tr>
+<tr>
+<td>entry_id</td>
+<td>int</td>
+<td>会计科目</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>int</td>
+<td>金额</td>
+</tr>
+<tr>
+<td>datetime</td>
+<td>datetime</td>
+<td>日期</td>
+<tr>
+<td>counter</td>
+<td>varchar(255)</td>
+<td>借贷对象，只有支出类和收入类对象有此信息</td>
+</tr>
+</tr>
+
+</table>
+
+## 会计科目
 
 表名：t_entry
 
@@ -18,7 +67,7 @@
 </tr>
 <tr>
 <td>name</td>
-<td>varchar2(100)</td>
+<td>varchar(255)</td>
 <td>名称</td>
 </tr>
 <tr>

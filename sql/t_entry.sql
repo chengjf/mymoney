@@ -16,4 +16,4 @@ CREATE TABLE t_entry (
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
-  COMMENT ='CP活动实时榜单';
+  COMMENT ='会计科目表';
