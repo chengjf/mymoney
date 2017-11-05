@@ -1,0 +1,14 @@
+development:
+  database:
+    host: 127.0.0.1
+    port: 3306
+    schema: mymoney
+    username: mymoney
+    password: mymoney
+production:
+  database:
+    host: 127.0.0.1
+    port: 3306
+    schema: mymoney
+    username: mymoney
+    password: mymoney

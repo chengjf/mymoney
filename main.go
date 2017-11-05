@@ -1,12 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"github.com/chengjf/mymoney/model"
-	"log"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
+	"github.com/olebedev/config"
+	"io/ioutil"
+	"log"
 	"time"
 )
 
@@ -16,7 +18,28 @@ func main() {
 }
 
 func test() {
-	db, err := sqlx.Connect("mysql", "mymoney:mymoney@tcp(127.0.0.1:3306)/mymoney?parseTime=true")
+	bytes, err := ioutil.ReadFile("config.yaml")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	cfg, err := config.ParseYaml(string(bytes))
+	if err != nil {
+		log.Fatalln(err)
+	}
+	print(cfg)
+	host, err := cfg.String("development.database.host")
+	port, err := cfg.String("development.database.port")
+	schema, err := cfg.String("development.database.schema")
+	username, err := cfg.String("development.database.username")
+	password, err := cfg.String("development.database.password")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var dataSourceName = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", username, password, host, port, schema)
+	log.Println("Database usr is:", dataSourceName)
+
+	db, err := sqlx.Connect("mysql", dataSourceName) //"mymoney:mymoney@tcp(127.0.0.1:3306)/mymoney?parseTime=true")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -58,13 +81,12 @@ func test() {
 		Datetime: time.Now(),
 	}
 	print(record)
-
-	result, err := db.Exec("INSERT INTO t_record(type, account_id, entry_id, amount, datetime, counter) VALUES (?,?,?,?,?,?)", record.Type, record.Account, record.Entry, record.Amount, record.Datetime, record.Counter)
+	tx := db.MustBegin()
+	result, err := tx.Exec("INSERT INTO t_record(type, account_id, entry_id, amount, datetime, counter) VALUES (?,?,?,?,?,?)", record.Type, record.Account, record.Entry, record.Amount, record.Datetime, record.Counter)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	print(result)
-
 
 	record = model.Record{
 		Type:     model.Credit,
@@ -76,11 +98,13 @@ func test() {
 	}
 	print(record)
 
-	result, err = db.Exec("INSERT INTO t_record(type, account_id, entry_id, amount, datetime, counter) VALUES (?,?,?,?,?,?)", record.Type, record.Account, record.Entry, record.Amount, record.Datetime, record.Counter)
+	result, err = tx.NamedExec("INSERT INTO t_record(type, account_id, entry_id, amount, datetime, counter) VALUES (:type,:account,:entry,:amount,:datetime,:counter)", &record)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("xx", err)
 	}
 	print(result)
+
+	tx.Commit()
 }
 
 func print(v interface{}) {
