@@ -12,7 +12,7 @@ CREATE TABLE t_entry (
   `update_time` DATETIME                    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   COMMENT '记录更新时间',
   PRIMARY KEY (id),
-  UNIQUE KEY (name, level, parent_lvl)
+  UNIQUE KEY (name)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4

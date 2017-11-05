@@ -87,7 +87,7 @@ insert into t_entry(name, level, parent_lvl) (select '服装',3,id from t_entry 
 insert into t_entry(name, level, parent_lvl) (select '鞋',3,id from t_entry where name = '衣物服饰' and level = 2);
 
 insert into t_entry(name, level, parent_lvl) (select '娱乐学习',2,id from t_entry where name = '支出类' and level = 1);
-insert into t_entry(name, level, parent_lvl) (select '电影',3,id from t_entry where name = '娱乐学习' and level = 2);
+insert into t_entry(name, level, parent_lvl) (select '看电影',3,id from t_entry where name = '娱乐学习' and level = 2);
 insert into t_entry(name, level, parent_lvl) (select 'KTV',3,id from t_entry where name = '娱乐学习' and level = 2);
 insert into t_entry(name, level, parent_lvl) (select '麻将扑克',3,id from t_entry where name = '娱乐学习' and level = 2);
 insert into t_entry(name, level, parent_lvl) (select '图书',3,id from t_entry where name = '娱乐学习' and level = 2);
