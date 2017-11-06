@@ -154,7 +154,7 @@ func main() {
 	router.POST("/createRecord", CreateRecord)
 	router.ServeFiles("/static/*filepath", http.Dir("static/"))
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8088", router))
 }
 
 func initDb() *sqlx.DB {
@@ -176,7 +176,7 @@ func initDb() *sqlx.DB {
 		log.Fatalln(err)
 	}
 
-	var dataSourceName = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", username, password, host, port, schema)
+	var dataSourceName = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&charset=utf8mb4", username, password, host, port, schema)
 	log.Println("Database usr is:", dataSourceName)
 
 	db, err := sqlx.Connect("mysql", dataSourceName) //"mymoney:mymoney@tcp(127.0.0.1:3306)/mymoney?parseTime=true")

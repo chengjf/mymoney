@@ -1,4 +1,4 @@
-axios.defaults.baseURL = 'http://127.0.0.1:8080';
+axios.defaults.baseURL = 'http://127.0.0.1:8088';
 axios.defaults.headers.common['Authorization'] = "abcdefghijl";
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.prototype.$http = axios
