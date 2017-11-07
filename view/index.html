@@ -20,10 +20,22 @@
                 {{ account.Name }}
             </option>
         </select>
-        <select v-model="debitEntry">
+        <select @change="changeEntry(2)" v-model="firstEntry">
             <option disabled value="">请选择</option>
-            <option v-for="entry in entries" :value="entry.Id">
+            <option v-for="entry in firstEntries" :value="entry.Id">
                 {{ entry.Name }}
+            </option>
+        </select>
+        <select @change="changeEntry(3)" v-model="secondEntry">
+            <option disabled value="">请选择</option>
+            <option v-for="entry in secondEntries" :value="entry.Id">
+            {{ entry.Name }}
+            </option>
+        </select>
+        <select v-model="thirdEntry">
+            <option disabled value="">请选择</option>
+            <option v-for="entry in thirdEntries" :value="entry.Id">
+            {{ entry.Name }}
             </option>
         </select>
 
@@ -45,13 +57,13 @@
         <input type="number" v-model="amount"/>
         <input type="date" v-model="date"/>
         <input type="time" v-model="time"/>
-        <time datetime="YYYY-MM-DDThh:mm:ssTZD">
+        <time datetime="YYYY-MM-DDThh:mm:ssTZD"/>
 
         <input type="text" v-model="counter"/>
 
         <input type="submit" value="提交"/>
     </form>
 </div>
-<script src="/static/js/main.js"></script>
+<script src="/static/js/main.js?x=12sfsssd3"></script>
 </body>
 </html>

@@ -17,6 +17,14 @@ var app = new Vue({
         counter: '无',
         accounts: [],
         entries: [],
+
+        //
+        firstEntry: "",
+        secondEntry: "",
+        thirdEntry: "",
+        firstEntries: [],
+        secondEntries: [],
+        thirdEntries: [],
         date: "",
         time: ""
     },
@@ -29,8 +37,8 @@ var app = new Vue({
                 that.accounts = res.data;
             })
             this.$http.get('/entries').then(function (res) {
-                console.log(res.data)
-                that.entries = res.data;
+                console.log("first entries: ", res.data)
+                that.firstEntries = res.data;
             })
         })
     },
@@ -84,6 +92,33 @@ var app = new Vue({
                 alert("保存失败")
             });
             ;
+        },
+        changeEntry: function(name){
+            console.log(name)
+            that = this
+            if(name === 2){
+                this.$http.get("/entries/"+this.firstEntry).then(function (res) {
+                    if (res.status === 200) {
+                        console.log(res.data)
+                        that.secondEntries = res.data
+                    } else {
+                    }
+                }).catch(function (response) {
+                    console.log(response);
+                });
+            }else if(name == 3){
+                this.$http.get("/entries/"+this.secondEntry).then(function (res) {
+                    if (res.status === 200) {
+                        console.log(res.data)
+                        that.thirdEntries = res.data
+
+                    } else {
+                    }
+                }).catch(function (response) {
+                    console.log(response);
+                });
+            }
+            console.log("changeEntry ")
         }
     }
 })

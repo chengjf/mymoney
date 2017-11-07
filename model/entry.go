@@ -52,3 +52,8 @@ func (dao *EntryDao) QueryEntriesByLevel(id uint64) (entries []Entry, err error)
 	err = dao.DB.Select(&entries, queryEntriesByLevel, id)
 	return
 }
+
+func (dao *EntryDao) QueryChildEntriesById(id uint64) (entries []Entry, err error) {
+	err = dao.DB.Select(&entries, queryChildEntriesById, id)
+	return
+}

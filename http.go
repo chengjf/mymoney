@@ -9,10 +9,14 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/olebedev/config"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
+	"strconv"
+	"github.com/gjvnq/go-logger"
+	"os"
 )
+
+var log, err = logger.New("test", 1, os.Stdout)
 
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	//fmt.Fprint(w, "Welcome!\n")
@@ -25,7 +29,7 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 func Show(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadFile("view/index.html")
 	if err != nil {
-		log.Fatalln(err)
+		log.ErrorF("error:%v", err)
 	}
 	w.Write(b)
 }
@@ -34,12 +38,14 @@ func Static(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 }
 
+
+
 func GetAllAccounts(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	accountDao := model.AccountDao{DB: DB}
 
 	cashAccount, err := accountDao.QueryAllAccount()
 	if err != nil {
-		log.Fatalln("queryAllAccount error: ", err)
+		log.ErrorF("queryAllAccount error: %v", err)
 	}
 	if bytes, e := json.MarshalIndent(cashAccount, "", "\t"); e == nil {
 		w.Write(bytes)
@@ -47,14 +53,33 @@ func GetAllAccounts(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 }
 
 func GetExpenseEntries(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	log.Info("GetExpenseEntries start")
 	entryDao := model.EntryDao{DB: DB}
 
-	entries, err := entryDao.QueryAllEntries()
-	if err != nil {
-		log.Fatalln("GetExpenseEntries error: ", err)
-	}
-	if bytes, e := json.MarshalIndent(entries, "", "\t"); e == nil {
-		w.Write(bytes)
+	parentEntry := ps.ByName("parent")
+	if parentEntry != "" {
+		log.InfoF("GetExpenseEntries, parentEntry is %v", parentEntry)
+
+		if parseUint, e := strconv.ParseUint(parentEntry, 10, 64); e == nil {
+
+			entries, err := entryDao.QueryChildEntriesById(parseUint);
+			if err != nil {
+				log.ErrorF("GetExpenseEntries, error: %v", err)
+			}
+			if bytes, e := json.MarshalIndent(entries, "", "\t"); e == nil {
+				w.Write(bytes)
+			}
+		} else {
+			log.ErrorF("GetExpenseEntries, parentEntry parse error %v", e)
+		}
+	} else {
+		entries, err := entryDao.QueryEntriesByLevel(1);
+		if err != nil {
+			log.ErrorF("GetExpenseEntries error: %v", err)
+		}
+		if bytes, e := json.MarshalIndent(entries, "", "\t"); e == nil {
+			w.Write(bytes)
+		}
 	}
 }
 
@@ -84,7 +109,7 @@ func (t *MyTime) UnmarshalJSON(s []byte) error {
 	if len(s) <= 2 || s[0] != '"' || s[len(s)-1] != '"' {
 		return fmt.Errorf("invalid time: %s", s)
 	}
-	var str = string(s[1 : len(s)-1])
+	var str = string(s[1: len(s)-1])
 	if n, err := fmt.Sscanf(str, "%d-%02d-%02d %02d:%02d:%02d", &year, &mon, &mday, &hour, &min, &sec); err != nil {
 		return fmt.Errorf("invalid string(%s): %s", err.Error(), s)
 	} else if n != 6 {
@@ -96,12 +121,12 @@ func (t *MyTime) UnmarshalJSON(s []byte) error {
 }
 func CreateRecord(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	body, _ := ioutil.ReadAll(r.Body)
-	log.Println("CreateRecord requst data is: ", string(body))
+	log.InfoF("CreateRecord requst data is: %v", string(body))
 	request := recordRequest{}
 	// {"debitAccount":3,"debitEntry":21,"creditAccount":1,"creditEntry":2,"amount":"11","datetime":"2017-11-05","counter":"ddd"}
 	err := json.Unmarshal(body, &request)
 	if err != nil {
-		log.Println("CreateRecord unmarshal error: ", err)
+		log.InfoF("CreateRecord unmarshal error: %v", err)
 	}
 
 	var record = model.Record{
@@ -128,7 +153,7 @@ func CreateRecord(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 
 	err = recordDao.Insert(record, record2)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 	}
 
 	//entryDao := model.EntryDao{DB: DB}
@@ -150,6 +175,7 @@ func main() {
 	router.GET("/", Index)
 	router.GET("/hello/:name", Hello)
 	router.GET("/accounts", GetAllAccounts)
+	router.GET("/entries/:parent", GetExpenseEntries)
 	router.GET("/entries", GetExpenseEntries)
 	router.POST("/createRecord", CreateRecord)
 	router.ServeFiles("/static/*filepath", http.Dir("static/"))
@@ -160,11 +186,11 @@ func main() {
 func initDb() *sqlx.DB {
 	bytes, err := ioutil.ReadFile("config.yaml")
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 	}
 	cfg, err := config.ParseYaml(string(bytes))
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 	}
 	print(cfg)
 	host, err := cfg.String("development.database.host")
@@ -173,15 +199,15 @@ func initDb() *sqlx.DB {
 	username, err := cfg.String("development.database.username")
 	password, err := cfg.String("development.database.password")
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 	}
 
 	var dataSourceName = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&charset=utf8mb4", username, password, host, port, schema)
-	log.Println("Database usr is:", dataSourceName)
+	log.InfoF("Database usr is: %v", dataSourceName)
 
 	db, err := sqlx.Connect("mysql", dataSourceName) //"mymoney:mymoney@tcp(127.0.0.1:3306)/mymoney?parseTime=true")
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 	}
 	return db
 }
