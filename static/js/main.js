@@ -31,19 +31,28 @@ var app = new Vue({
     computed: {
 
         firstEntries: function () {
-            console.log("computed firstEntries, entries: " + this.entries)
+            console.log("computed firstEntries, entries: " + "")
+            console.log(this.debitAccount)
+            var that = this
+            var t = this.accounts.filter(function (a) {
+                console.log(a.Id + " " + that.debitAccount)
+                return a.Id == that.debitAccount
+            })[0];
 
             var ts = this.entries.filter(function (entry) {
-                return entry.Level === 1
+                console.log(entry.ParentLvl.Int64)
+                return entry.ParentLvl.Int64 == (t ? t.EntryId : undefined)
             });
             console.log("computed firstEntries: " + ts)
             return ts
         },
         secondEntries: function () {
             console.log("computed secondEntries, firstEntries: " + this.firstEntry)
+
+
             var firstEntry = this.firstEntry
             var ts = this.entries.filter(function (entry) {
-                return entry.Level == 2 && entry.ParentLvl.Int64 == firstEntry
+                return entry.ParentLvl.Int64 == firstEntry
             });
             console.log("computed secondEntries, firstEntries: " + firstEntry + ", result: " + ts)
 
@@ -53,7 +62,7 @@ var app = new Vue({
             console.log("computed thirdEntries, secondEntries: " + this.secondEntry)
             var _this = this
             return this.entries.filter(function (entry) {
-                return entry.Level == 3 && entry.ParentLvl.Int64 == _this.secondEntry
+                return entry.ParentLvl.Int64 == _this.secondEntry
             })
         }
     },
