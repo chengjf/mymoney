@@ -38,8 +38,6 @@ func Static(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 }
 
-
-
 func GetAllAccounts(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	accountDao := model.AccountDao{DB: DB}
 
@@ -81,6 +79,20 @@ func GetExpenseEntries(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 			w.Write(bytes)
 		}
 	}
+}
+
+func GetAllEntries(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	log.Info("GetAllEntries start")
+	entryDao := model.EntryDao{DB: DB}
+
+	entries, err := entryDao.QueryAllEntries()
+	if err != nil {
+		log.ErrorF("GetAllEntries error: %v", err)
+	}
+	if bytes, e := json.MarshalIndent(entries, "", "\t"); e == nil {
+		w.Write(bytes)
+	}
+
 }
 
 type recordRequest struct {
@@ -176,7 +188,7 @@ func main() {
 	router.GET("/hello/:name", Hello)
 	router.GET("/accounts", GetAllAccounts)
 	router.GET("/entries/:parent", GetExpenseEntries)
-	router.GET("/entries", GetExpenseEntries)
+	router.GET("/entries", GetAllEntries)
 	router.POST("/createRecord", CreateRecord)
 	router.ServeFiles("/static/*filepath", http.Dir("static/"))
 

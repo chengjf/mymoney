@@ -22,23 +22,56 @@ var app = new Vue({
         firstEntry: "",
         secondEntry: "",
         thirdEntry: "",
-        firstEntries: [],
-        secondEntries: [],
-        thirdEntries: [],
+        // firstEntries: [],
+        // secondEntries: [],
+        // thirdEntries: [],
         date: "",
         time: ""
     },
-    computed: {},
+    computed: {
+
+        firstEntries: function () {
+            console.log("computed firstEntries, entries: " + this.entries)
+
+            var ts = this.entries.filter(function (entry) {
+                return entry.Level === 1
+            });
+            console.log("computed firstEntries: " + ts)
+            return ts
+        },
+        secondEntries: function () {
+            console.log("computed secondEntries, firstEntries: " + this.firstEntry)
+            var firstEntry = this.firstEntry
+            var ts = this.entries.filter(function (entry) {
+                return entry.Level == 2 && entry.ParentLvl.Int64 == firstEntry
+            });
+            console.log("computed secondEntries, firstEntries: " + firstEntry + ", result: " + ts)
+
+            return ts
+        },
+        thirdEntries: function () {
+            console.log("computed thirdEntries, secondEntries: " + this.secondEntry)
+            var _this = this
+            return this.entries.filter(function (entry) {
+                return entry.Level == 3 && entry.ParentLvl.Int64 == _this.secondEntry
+            })
+        }
+    },
+    created: function () {
+        console.log("created start")
+
+        console.log("created end")
+    },
     mounted: function () {
         this.$nextTick(function () {
             that = this
             this.$http.get('/accounts').then(function (res) {
-                console.log(res.data)
+                console.log("accounts: " + res.data)
                 that.accounts = res.data;
             })
             this.$http.get('/entries').then(function (res) {
-                console.log("first entries: ", res.data)
-                that.firstEntries = res.data;
+                console.log("all entries: ", res.data)
+                that.entries = res.data;
             })
         })
     },
@@ -77,7 +110,7 @@ var app = new Vue({
                 creditAccount: this.creditAccount,
                 creditEntry: this.creditEntry,
                 amount: Number(this.amount),
-                datetime: this.date + " " + this.time+":00",
+                datetime: this.date + " " + this.time + ":00",
                 counter: this.counter,
             }
             this.$http.post("/createRecord", postData).then(function (res) {
@@ -93,32 +126,32 @@ var app = new Vue({
             });
             ;
         },
-        changeEntry: function(name){
-            console.log(name)
-            that = this
-            if(name === 2){
-                this.$http.get("/entries/"+this.firstEntry).then(function (res) {
-                    if (res.status === 200) {
-                        console.log(res.data)
-                        that.secondEntries = res.data
-                    } else {
-                    }
-                }).catch(function (response) {
-                    console.log(response);
-                });
-            }else if(name == 3){
-                this.$http.get("/entries/"+this.secondEntry).then(function (res) {
-                    if (res.status === 200) {
-                        console.log(res.data)
-                        that.thirdEntries = res.data
-
-                    } else {
-                    }
-                }).catch(function (response) {
-                    console.log(response);
-                });
-            }
-            console.log("changeEntry ")
-        }
+        // changeEntry: function (name) {
+        //     console.log(name)
+        //     that = this
+        //     if (name === 2) {
+        //         this.$http.get("/entries/" + this.firstEntry).then(function (res) {
+        //             if (res.status === 200) {
+        //                 console.log(res.data)
+        //                 that.secondEntries = res.data
+        //             } else {
+        //             }
+        //         }).catch(function (response) {
+        //             console.log(response);
+        //         });
+        //     } else if (name == 3) {
+        //         this.$http.get("/entries/" + this.secondEntry).then(function (res) {
+        //             if (res.status === 200) {
+        //                 console.log(res.data)
+        //                 that.thirdEntries = res.data
+        //
+        //             } else {
+        //             }
+        //         }).catch(function (response) {
+        //             console.log(response);
+        //         });
+        //     }
+        //     console.log("changeEntry ")
+        // }
     }
 })
