@@ -38,12 +38,13 @@ var app = new Vue({
                 console.log(a.Id + " " + that.debitAccount)
                 return a.Id == that.debitAccount
             })[0];
-
+            console.log(t)
             var ts = this.entries.filter(function (entry) {
                 console.log(entry.ParentLvl.Int64)
-                return entry.ParentLvl.Int64 == (t ? t.EntryId : undefined)
+                return entry.Id == (t ? t.EntryId : undefined)
             });
             console.log("computed firstEntries: " + ts)
+            this.firstEntry=""
             return ts
         },
         secondEntries: function () {
@@ -55,6 +56,7 @@ var app = new Vue({
                 return entry.ParentLvl.Int64 == firstEntry
             });
             console.log("computed secondEntries, firstEntries: " + firstEntry + ", result: " + ts)
+            this.secondEntry=""
 
             return ts
         },
@@ -64,6 +66,7 @@ var app = new Vue({
             return this.entries.filter(function (entry) {
                 return entry.ParentLvl.Int64 == _this.secondEntry
             })
+            this.thirdEntry=""
         }
     },
     created: function () {
