@@ -191,7 +191,7 @@ func main() {
 	router.GET("/entries", GetAllEntries)
 	router.POST("/createRecord", CreateRecord)
 	router.ServeFiles("/static/*filepath", http.Dir("static/"))
-
+	fmt.Println("Server start at 8088")
 	log.Fatal(http.ListenAndServe(":8088", router))
 }
 
